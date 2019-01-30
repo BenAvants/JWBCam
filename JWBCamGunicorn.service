@@ -1,0 +1,14 @@
+[Unit]
+Description=JWBCam_Gunicorn
+After=network.target JWBCamPIGPIOD.service
+
+[Service]
+ExecStart=/usr/local/bin/gunicorn --bind 0.0.0.0:5000 -w 2 -k gevent JWBCamFlask:app
+WorkingDirectory=/home/pi/
+StandardOutput=inherit
+StandardError=inherit
+Restart=always
+User=pi
+
+[Install]
+WantedBy=multi-user.target

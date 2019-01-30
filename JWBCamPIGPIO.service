@@ -1,0 +1,14 @@
+[Unit]
+Description=JWBCam_PIGPIO
+After=network.target pigpiod.service
+
+[Service]
+ExecStart=/home/pi/JWBCamPIGPIO.py
+WorkingDirectory=/home/pi/
+StandardOutput=inherit
+StandardError=inherit
+Restart=always
+User=pi
+
+[Install]
+WantedBy=multi-user.target

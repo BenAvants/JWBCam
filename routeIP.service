@@ -1,0 +1,14 @@
+[Unit]
+Description=Reoute Flask IP
+After=network.target
+
+[Service]
+ExecStart=/home/pi/routeIP.sh
+WorkingDirectory=/home/pi/
+StandardOutput=inherit
+StandardError=inherit
+Restart=never
+User=root
+
+[Install]
+WantedBy=multi-user.target
