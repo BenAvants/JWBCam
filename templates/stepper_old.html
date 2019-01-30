@@ -1,0 +1,29 @@
+
+{% import 'macros.html' as macro %}
+
+<html>
+<head>
+{{ macro.stylize(user) }}
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+{% if refresh.enable %}
+<meta http-equiv="refresh" content="{{refresh.rate}}" />
+{% endif %}
+</head>
+<body>
+{{ macro.header(user) }}
+<br><h1>{{ macro.titler(HText,IP) }}</h1></br>
+ <a href="/stepper/command/stepUp" class="round up_down_arrow stepper_button">&uarr;</a><br>
+ <a href="/stepper/command/stop" class="round stop stepper_button">&#9724;</a><br>
+ <a href="/stepper/command/stepDown" class="round up_down_arrow stepper_button">&darr;</a><br>
+<p>&nbsp;</p>
+ <a href="/stepper/command/stepDown"><i class="material-icons" style="font-size:48px;">skip_previous</i></a>
+ <a href="/stepper/command/stop"><i class="material-icons" style="font-size:48px;">stop</i></a>
+ <a href="/stepper/command/stepUp"><i class="material-icons" style="font-size:48px;">skip_next</i></a><br>
+<p>&nbsp;</p>
+<form method="POST" action="/refreshToggle/">
+<div style="float: right;">Change color scheme to: <a href="/style/Sunshine">Sunshine</a>, <a href="/style/Anger">Anger</a>, <a href="/style/Slate">Slate</a></div>
+<button name="refresh">Toggle Refresh</button>
+</form>
+
+</body>
+</html>

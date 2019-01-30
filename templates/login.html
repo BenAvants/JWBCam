@@ -1,0 +1,25 @@
+
+{% import 'macros.html' as macro %}
+
+<html>
+{{ macro.stylize(user) }}
+{{ macro.header(user) }}
+<body>
+<br><h1>{{ macro.titler(HText,IP) }}</h1></br>
+<p>&nbsp;</p>
+
+<h2>JWB-Cam Login</h2>
+<form method="post">
+<dl>
+    <dt>Username</dt>
+    <dd>{{ macro.input('username') }}</dd>
+    <dt>Password</dt>
+    <dd>{{ macro.input('password', type='password') }}</dd>
+</dl>
+<p style="padding: 0px 150px;"><input type=submit value=Login style="padding: 0px 10px;"></p>
+<p>{{ macro.textarea('comment') }}</p>
+</form>
+
+{{ macro.footer(user) }}
+</body>
+</html>

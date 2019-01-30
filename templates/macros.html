@@ -1,0 +1,306 @@
+{% macro stylize(user) %}
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	{% if user.isAdmin %}
+	<title>JWB-Cam Power User</title>
+	{% else %}
+	<title>JWB-Cam</title>
+	{% endif %}
+	<link rel="stylesheet" type="text/css" href='/static/css/jwbcam.css' />
+	<link rel="stylesheet" type="text/css" href='/static/css/{{user.style}}.css' />
+{% endmacro %}
+
+{% macro header(user) %}
+	<header>
+	<script src="{{ url_for('static', filename='js/jquery-3.2.1.min.js') }}"></script>
+	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+	<script>
+		$(document).on("keypress", ":input:not(textarea)", function(event) {
+			if (event.keyCode != 13) {
+				return true;
+			}
+			var data = {};
+			data[$(this).attr('name')] = $(this).val();
+			data.scripted = "True";
+			$.post(this.id, data);
+			return false;
+		});
+	</script>
+	<script>
+		$(document).ready(function(){
+			$("button:not(.tablinks)").hide();
+			$("a").on("click", function(e){
+				if (this.href.indexOf("command") != -1) {
+					e.preventDefault();
+					$.post(this.href,
+						{scripted: "True"},
+						function(data, status){
+							
+						});
+					return false;
+				}
+			});
+			$("input").on("change", function(e){
+				var data = {};
+				data[$(this).attr('name')] = $(this).val();
+				data.scripted = "True";
+				$.post(this.id, data);
+				return false;
+			});
+			$("select").on("change", function(e){
+				var data = {};
+				data[$(this).attr('name')] = $(this).val();
+				data.scripted = "True";
+				$.post(this.id, data);
+				return false;
+			});
+		});
+	</script>
+	<!--
+	<script>
+		var source = new EventSource("{{ url_for('status_updates') }}");
+		source.onmessage = function (event) {
+			var data = JSON.parse(event.data);
+			for (var name in data) {
+				$("input[name=" + name + "]").val(data[name]);
+			}
+			
+		}
+	</script>
+	-->
+	{% if user['refresh'] %}
+		<meta http-equiv="refresh" content="{{user['RefreshRate'] }}" />
+	{% endif %}
+	<div class="line_container">
+	<div class="left">
+	{{user['name']}} (<a href={{user['LogLink']}}>{{user['LogAction']}}</a>)
+	</div>
+	<div class="middle">
+	{% if user.isAdmin %}
+		<a href="/manage/">Manage Server</a>
+	{% else %}
+	
+	{% endif %}
+	</div>
+	<div class="right">
+	{% if user.name != 'Guest' %}
+		<a href="/user/">User Settings</a>
+	{% endif %}
+	</div>
+	</div>
+	</header>
+{% endmacro %}
+
+{% macro footer(user) %}
+	<footer>
+	Color Scheme:<br>
+	<div class="line_container">
+	<div class="left">
+	{% if user.style == 'Sunshine' %}
+		<b><i>
+	{% endif %}
+	<a href="/style/Sunshine">Sunshine</a>
+	</i></b>
+	</div>
+	<div class="middle">
+	{% if user.style == 'Slate' %}
+		<b><i>
+	{% endif %}
+	<a href="/style/Slate">Slate</a>
+	</i></b>
+	</div>
+	<div class="right">
+	{% if user.style == 'Anger' %}
+		<b><i>
+	{% endif %}
+	<a href="/style/Anger">Anger</a>
+	</i></b>
+	</div>
+	</div>
+	</footer>
+{% endmacro %}
+
+{% macro titler(HText,IP) %}
+	{{HText}}
+	{% if HText == 'JWB-Cam' %}
+	(<a href="/">home</a>,<a href={{IP}}>ip</a>)
+	{% endif %}
+{% endmacro %}
+
+{% macro input(name, value='', type='text', size=20) -%}
+    <input type="{{ type }}" name="{{ name }}" value="{{
+        value|e }}" size="{{ size }}">
+{% endmacro %}
+
+{% macro textarea(name, value='', rows=10, cols=40) -%}
+    <textarea name="{{ name }}" rows="{{ rows }}" cols="{{ cols
+        }}">{{ value|e }}</textarea>
+{% endmacro %}
+
+{% macro stepperControls() %}
+	<a href="/stepper/command/runDown"><i class="material-icons" style="font-size:48px;">fast_rewind</i></a>
+	<a href="/stepper/command/stepDown"><i class="material-icons" style="font-size:48px;">skip_previous</i></a>
+	<a href="/stepper/command/stop"><i class="material-icons" style="font-size:48px;">cancel</i></a>
+	<a href="/stepper/command/stepUp"><i class="material-icons" style="font-size:48px;">skip_next</i></a>
+	<a href="/stepper/command/runUp"><i class="material-icons" style="font-size:48px;">fast_forward</i></a><br>
+	<a href="/stepper/command/goHome"><i class="material-icons" style="font-size:48px;">home</i></a><br>
+{% endmacro %}
+
+{% macro stepperLocals(locals) %}
+	<form autocomplete="off" method="POST"><table><tr><td style="width: 10em;">
+	Step distance (mm):</td>
+		<td><input type="number" name="stepSize" value="{{ locals['stepSize'] }}" min="0.002" 
+		step="0.002" style="width:60px; text-align: right;" 
+		id="{{ url_for('steppercom',command='stepSize') }}">
+		</td><td>
+		<button type="submit" formaction="{{ url_for('steppercom',command='stepSize') }}">Set
+		</button></td>
+	</tr></form>
+	<form autocomplete="off" method="POST"><table><tr><td style="width: 10em;">
+	Jog timeout (sec):</td>
+		<td><input type="number" name="runLimit" value="{{ locals['runLimit'] }}" min="0.01" 
+		step="0.01" style="width:60px; text-align: right;" 
+		id="{{ url_for('steppercom',command='runLimit') }}">
+		</td><td>
+		<button type="submit" formaction="{{ url_for('steppercom',command='runLimit') }}">Set
+		</button></td>
+	</tr></table>
+	</form>
+{% endmacro %}
+
+{% macro stepperGlobals(stepper) %}
+	<table style="background: none;"
+	{% for setting, value in stepper.settingsVals().items() %}
+		<tr><td style="width: 10em;">
+		{{setting}}: </td><td><input name="{{setting}}" value="{{value}}" 
+						style="width:110px; text-align: right;"
+						id="{{ url_for('steppercom',command=setting) }}">
+		</td><td>
+		<button type="submit" formaction="{{ url_for('steppercom',command=setting) }}">Set</button>
+		</td></tr>
+	{% endfor %}
+	</table>
+	<script>
+		var source = new EventSource("{{ url_for('stepper_stream') }}");
+		source.onmessage = function (event) {
+			var data = JSON.parse(event.data);
+			for (var name in data) {
+				$("input[name=" + name + "]").val(data[name]);
+			}
+			
+		}
+	</script>
+{% endmacro %}
+
+{% macro mjpegStream(camera) %}
+    <br>
+	<img src="{{ camera.getURL() }}" style="width: 100%;">
+	<br>
+{% endmacro %}
+
+{% macro cameraLocals(cameralocals) %}
+	<table style="background: none;">
+	{% for setting, value in cameralocals.items() %}
+		<tr><td style="width: 20em;">
+		{{setting}}: </td><td><input name="{{setting}}" value="{{value}}" 
+						style="width:2200px; text-align: right;"
+						id="{{ url_for('cameracom',command=setting) }}">
+		</td><td>
+		<button type="submit" formaction="{{ url_for('cameracom',command=setting) }}">Set</button>
+		</td></tr>
+	{% endfor %}
+	</table>
+{% endmacro %}
+
+{% macro cameraGlobals(camera) %}
+	<div>
+	<script>
+		function openTab(evt, tabName) {
+			// Declare all variables
+			var i, tabcontent, tablinks;
+
+			// Get all elements with class="tabcontent" and hide them
+			tabcontent = document.getElementsByClassName("tabcontent");
+			for (i = 0; i < tabcontent.length; i++) {
+				tabcontent[i].style.display = "none";
+			}
+
+			// Get all elements with class="tablinks" and remove the class "active"
+			tablinks = document.getElementsByClassName("tablinks");
+			for (i = 0; i < tablinks.length; i++) {
+				tablinks[i].className = tablinks[i].className.replace(" active", "");
+			}
+
+			// Show the current tab, and add an "active" class to the button that opened the tab
+			document.getElementById(tabName).style.display = "block";
+			evt.currentTarget.className += " active";
+		}
+	</script>
+	</div>
+	<div class="tab">
+	{% for setting, info in camera.get_settings().items() %}
+		{% if 'tab' in info[1] %}
+			<button class="tablinks" onclick="openTab(event, '{{info[0]}}')">{{info[0]}}</button>
+		{% endif %}
+	{% endfor %}
+	</div>
+	{% for setting, info in camera.get_settings().items() %}
+		{% if 'tab' in info[1] %}
+			{% if not loop.first %}
+				</table>
+				<span onclick="this.parentElement.style.display='none'">xHIDEx</span>
+				</div>
+			{% endif %}
+			<div id="{{info[0]}}" class="tabcontent">
+			<span onclick="this.parentElement.style.display='none'">xHIDEx</span>
+			<table style="background: none;">
+		{% else %}
+			<tr><td style="width: 20em;">
+			{{info[0]}}: </td><td>
+			{% if not 'radio' in info[1] %}
+				<input name="{{setting}}" value="{{info[2]}}" 
+				type="{{info[1]}}" style="width:220px; text-align: right;"
+				id="{{ url_for('cameracom',command=setting) }}">
+			{% else %}
+				<select name="{{setting}}" style="width:220px; text-align: right;"
+				id="{{ url_for('cameracom',command=setting) }}">
+				{% for choice in info[3] %}
+					<option value="{{choice}}"
+					{% if info[2] == choice %}
+						selected="selected"
+					{% endif %}
+					>{{choice}}</option>
+				{% endfor %}
+				</select>
+			{% endif %}
+			</td><td>
+			<button type="submit" formaction="{{ url_for('cameracom',command=setting) }}">Set</button>
+			</td></tr>
+		{% endif %}
+		{% if loop.last %}
+			</table>
+			<span onclick="this.parentElement.style.display='none'">xHIDEx</span>
+			</div>
+		{% endif %}
+	{% endfor %}
+	<script>
+		var source = new EventSource("{{ url_for('camera_settings_stream') }}");
+		source.onmessage = function (event) {
+			var data = JSON.parse(event.data);
+			for (var name in data) {
+				$("input[name=" + name + "]").val(data[name][2]);
+				var sel = $("select[name=" + name + "]");
+				if (sel.length > 0)	{
+					sel = sel[0];
+					var opts = sel.options;
+					for (var opt, j = 0; opt = opts[j]; j++) {
+						if (opt.value == data[name][2]) {
+							sel.selectedIndex = j;
+							break;
+						}
+					}
+				}
+			}
+			
+		}
+	</script>
+{% endmacro %}

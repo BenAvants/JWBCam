@@ -1,0 +1,9 @@
+
+{% import 'macros.html' as macro %}
+
+<html style="height: 100%;width: 100%">
+{{ macro.stylize(user) }}
+<body style="height: 100%;width: 100%">
+{{ macro.mjpegStream(camera) }}
+</body>
+</html>

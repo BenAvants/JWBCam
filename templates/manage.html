@@ -1,0 +1,20 @@
+
+{% import 'macros.html' as macro %}
+
+<html>
+{{ macro.stylize(user) }}
+{{ macro.header(user) }}
+<body>
+<br><h1>{{ macro.titler(HText,IP) }}</h1></br>
+<ul>
+	{% for name in preferences %}
+	<li><a href="/manage/users/{{name}}">{{name}}</a></li>
+	{% endfor %}
+	<br><li><a href="/manage/addUser"><b>Add User</b></a></li>
+</ul>
+<form method="POST" action="/refreshToggle/">
+<button name="refresh">Toggle Refresh</button>
+</form>
+{{ macro.footer(user) }}
+</body>
+</html>

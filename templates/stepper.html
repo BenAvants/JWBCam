@@ -1,0 +1,19 @@
+
+{% import 'macros.html' as macro %}
+
+<html>
+{{ macro.stylize(user) }}
+{{ macro.header(user) }}
+<body>
+<br><h1>{{ macro.titler(HText,IP) }}</h1></br>
+{{ macro.stepperControls() }}
+{{ macro.stepperLocals(stepperlocals) }}
+<br>
+{{ macro.stepperGlobals(stepper) }}
+<p>&nbsp;</p>
+<form method="POST" action="/refreshToggle/">
+<button name="refresh">Toggle Refresh</button>
+</form>
+{{ macro.footer(user) }}
+</body>
+</html>

@@ -1,0 +1,25 @@
+
+{% import 'macros.html' as macro %}
+
+<html>
+{{ macro.stylize(user) }}
+{{ macro.header(user) }}
+<body>
+<br><h1>{{ macro.titler(HText,IP) }}</h1></br>
+<form method="post">
+<dl>
+    <dt>Username</dt>
+    <dd>{{ macro.input('username') }}</dd>
+    <dt>Password</dt>
+    <dd>{{ macro.input('password', type='password') }}</dd>
+</dl>
+Make Admin:<input id="isAdmin" type="checkbox" name="isadmin" value="true">
+<p style="padding: 0px 150px;"><input type=submit value=Create style="padding: 0px 10px;"></p>
+<p>{{ macro.textarea('notes',user['notes']) }}</p>
+</form>
+<form method="POST" action="/refreshToggle/">
+<button name="refresh">Toggle Refresh</button>
+</form>
+{{ macro.footer(user) }}
+</body>
+</html>
